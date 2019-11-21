@@ -1,23 +1,51 @@
-import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component, Input, OnInit } from '@angular/core';
+import { PostService } from '../services/post.service';
 
 @Component({
   selector: 'app-posts',
-  templateUrl: './posts.component.html',
-  styleUrls: ['./posts.component.css']
+  templateUrl: './posts.component.html'
 })
-export class PostsComponent {
+export class PostsComponent implements OnInit {
+  
   posts: any[];
-
-  constructor(http: HttpClient)
+  
+  constructor(private service: PostService)
   {
-    http.get('http://jsonplaceholder.typicode.com/posts')
+    
+
+  }
+  ngOnInit() {
+    this.service.getPosts()
     .subscribe(response => {
       this.posts = response;
 
     });
-
   }
 
+  createPost(input: HTMLInputElement)
+  {
+    let post = { title: input.value };
+    input.value = '';
+    this.service.createPost(post)
+    .subscribe(response => {
+      post['id'] = response;
+      this.posts.splice(0, 0, post);
+    });
+  }
+  updatePost(post)
+  {
+    this.service.updatePost
+    .subscribe(response => {
+      console.log(response);
+    })
+  }
+  deletePost(post)
+  {
+    this.serive.deletePost()
+    .subscribe(response => {
+      let index = this.posts.indexOf(post);
+      this.posts.splice(index, 1);
+    })
+  }
 
 }
