@@ -14,17 +14,17 @@ export class DataService {
 
   constructor(private url: string, private http: HttpClient) { }
 
-  getAll(){
+  getAll() {
    return this.http.get(this.url).
    pipe(map(response => response)).pipe(
    catchError(this.handleError));
   }
 
   create(resource){
-    return Observable.throw(new AppError());
+    //return Observable.throw(new AppError());
 
-    // return this.http.post(this.url, JSON.stringify(resource))
-    // .pipe(map(response => response)).pipe((catchError(this.handleError)));
+    return this.http.post(this.url, JSON.stringify(resource))
+    .pipe(map(response => response)).pipe((catchError(this.handleError)));
   }
 
   update(resource){
@@ -37,7 +37,7 @@ export class DataService {
 
      return this.http.delete(this.url + '/' + id)
      .pipe(map(response => response)).pipe((catchError(this.handleError)));
-      
+
   }
 
     private handleError(error: Response) {
@@ -46,7 +46,7 @@ export class DataService {
 
       if(error.status === 404)
       return Observable.throw(new NotFoundError());
-  
+
   return Observable.throw(new AppError());
 
     }
